@@ -13,7 +13,10 @@
           :key="item"
         >
           <img
-            v-if="activeIndex === index"
+            :class="[
+              'image',
+              { 'image--show': activeIndex === index },
+            ]"
             :src="item"
             @click="handleNextPic(index)"
           />
@@ -126,8 +129,12 @@ const countdownBg = computed(() => `url(${cdn.value}/main-bg.png)`);
   .image-wrapper {
     cursor: pointer;
     width: 1334px;
-    img {
+    .image {
+      display: none;
       width: 100%;
+      &--show {
+        display: block;
+      }
     }
   }
 }

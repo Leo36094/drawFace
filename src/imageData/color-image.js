@@ -1,4 +1,9 @@
-const cdn = import.meta.env.VITE_COLORS;
+const mode = import.meta.env.MODE;
+const cdn =
+  mode === "development"
+    ? import.meta.env.VITE_COLORS
+    : import.meta.env.VITE_COLORS_PROD;
+
 const getImgs = (name) => {
   return Array(9)
     .fill(0)

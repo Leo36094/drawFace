@@ -11,7 +11,6 @@
           class="image-wrapper"
           v-for="(item, index) in list"
           :key="item"
-          :style="{ 'background-image': `url(${item})` }"
         >
           <img
             v-if="activeIndex === index"
@@ -24,7 +23,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import colorImgs from "../imageData/color-image";
 const {
   blackImgs,
@@ -67,6 +66,16 @@ function handleNextPic(index) {
   list.value.splice(index, 1);
   activeIndex.value = getNums();
 }
+const mode = import.meta.env.MODE;
+const cdn = computed(() =>
+  mode === "development"
+    ? import.meta.env.VITE_COLORS
+    : import.meta.env.VITE_COLORS_PROD
+);
+const bg = computed(
+  () => `url(${cdn.value}/steve-johnson-Xx_d26R37E4-unsplash.jpg)`
+);
+const countdownBg = computed(() => `url(${cdn.value}/main-bg.png)`);
 </script>
 <style scoped lang="scss">
 @mixin centerBg($size: contain) {
@@ -81,7 +90,7 @@ function handleNextPic(index) {
   align-items: center;
   justify-content: center;
   background-color: black;
-  background-image: url('../assets/colors/steve-johnson-Xx_d26R37E4-unsplash.jpg');
+  background-image: v-bind("bg");
   @include centerBg(cover);
 }
 .colors {
@@ -93,7 +102,7 @@ function handleNextPic(index) {
   .start-page {
     width: 100%;
     height: 100%;
-    background-image: url("../assets/colors/main-bg.png");
+    background-image: v-bind("countdownBg");
     @include centerBg();
     position: relative;
     .button {

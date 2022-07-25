@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
-    <div class="time">{{ readableCountdown }}</div>
     <div class="score">SCORE: {{ score }}</div>
     <div class="colors">
+      <div class="time">{{ readableCountdown }}</div>
       <div class="start-page" v-if="gameStatus === GAME_STATUS.READY">
         <div class="button" @click="gameStart">Start</div>
       </div>
@@ -217,9 +217,11 @@ const countdownBg = computed(() => `url(${cdn.value}/main-bg.png)`);
   padding: 0;
   width: 960px;
   position: relative;
+  height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center;
   .start-page {
     width: 100%;
     height: 600px;
@@ -238,10 +240,6 @@ const countdownBg = computed(() => `url(${cdn.value}/main-bg.png)`);
       text-transform: uppercase;
       cursor: pointer;
     }
-  }
-  .event-page {
-    width: 100%;
-    height: 100%;
   }
 
   .image {

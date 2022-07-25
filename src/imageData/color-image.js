@@ -1,8 +1,9 @@
+const cdn = import.meta.env.VITE_COLORS;
 const getImgs = (name) => {
   return Array(9)
     .fill(0)
     .map((item, index) => {
-      return `/src/assets/colors/${name}${index + 1}.png`;
+      return `${cdn}/${name}${index + 1}.png`;
     });
 };
 const blackImgs = getImgs("black");

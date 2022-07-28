@@ -17,7 +17,7 @@
             ]"
             :style="{ 'background-image': `url(${item})` }"
           >
-          <img id="preload" :src="item" />
+            <img id="preload" :src="item" />
           </div>
         </div>
         <div class="answer-group">
@@ -49,26 +49,32 @@ import { ref, computed } from "vue";
 import useInterval from "../utils/useInterval";
 import colorImgs from "../imageData/color-image";
 const {
-  blackImgs,
-  pinkImgs,
-  purpleImgs,
-  redImgs,
-  whiteImgs,
-  yellowImgs,
-  greenImgs,
-  orangeImgs,
-  blueImgs,
+  waterBlue,
+  whilte,
+  yellowWhite,
+  red,
+  pink,
+  grass,
+  purple,
+  yellow,
+  black,
+  green,
+  orange,
+  blue,
 } = colorImgs;
 const initImgList = [].concat([
-  ...blackImgs,
-  ...pinkImgs,
-  ...purpleImgs,
-  ...redImgs,
-  ...whiteImgs,
-  ...yellowImgs,
-  ...greenImgs,
-  ...orangeImgs,
-  ...blueImgs,
+  ...waterBlue,
+  ...whilte,
+  ...yellowWhite,
+  ...red,
+  ...pink,
+  ...grass,
+  ...purple,
+  ...yellow,
+  ...black,
+  ...green,
+  ...orange,
+  ...blue,
 ]);
 const GAME_STATUS = {
   READY: "ready",
@@ -146,7 +152,7 @@ const cdn = computed(() =>
 const bg = computed(
   () => `url(${cdn.value}/steve-johnson-Xx_d26R37E4-unsplash.jpg)`
 );
-const countdownBg = computed(() => `url(${cdn.value}/main-bg.png)`);
+const countdownBg = computed(() => `url(${cdn.value}/new-start.png)`);
 </script>
 <style scoped lang="scss">
 @mixin centerBg($size: contain) {

@@ -19,12 +19,11 @@ defineProps({
 <style scoped lang="scss">
 $types: "A", "B", "C", "D";
 .draw-result {
-  width: 500px;
-  height: 500px;
+  width: 70%;
+  height: 70%;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid black;
   margin: 20px auto;
   @each $type in $types {
     &--#{$type} {

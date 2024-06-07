@@ -1,71 +1,87 @@
 <script setup>
-import { ref, onBeforeMount, computed } from "vue";
-import { message } from "ant-design-vue";
-import Group from "./components/Group.vue";
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-const getList = () =>
-  Array(36)
-    .fill(0)
-    .map((_, index) => index + 1);
+import { ref, computed, onMounted, provide } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { GAME } from "./constants";
 
-const groups = ref(["A", "B", "C", "D"]);
-const groupMap = ref({
-  A: getList(),
-  B: getList(),
-  C: getList(),
-  D: getList(),
+const router = useRouter();
+const route = useRoute();
+
+const currentGame = ref(GAME.DRAW_FACE);
+
+const translation = {
+  [GAME.DRAW_FACE]: {
+    title: "猜臉遊戲",
+    subTitle: "平常愛當演員的，現在該你上場了！",
+  },
+  [GAME.GUESS_COLOR]: { title: "猜顏色", subTitle: "好好說話！" },
+};
+const routesMap = {
+  [GAME.DRAW_FACE]: "/",
+  [GAME.GUESS_COLOR]: "/colors",
+};
+
+const nextGame = computed(() =>
+  currentGame.value === GAME.DRAW_FACE
+    ? GAME.GUESS_COLOR
+    : GAME.DRAW_FACE
+);
+const switchGame = () => {
+  router.push({ name: nextGame.value });
+  currentGame.value = nextGame.value;
+};
+
+const syncCurrentGame = (game = GAME.DRAW_FACE) => {
+  currentGame.value = game;
+};
+provide("switchGame", {
+  syncCurrentGame,
 });
 
-const currentGroup = ref("A");
-const drawResult = ref("");
-const isCurrentGroupEnd = computed(
-  () => groupMap.value[currentGroup.value].length === 0
-);
-
-function onDraw() {
-  const length = groupMap.value[currentGroup.value].length;
-  if (length === 0) {
-    message.warn("已全數抽完", 1);
-  } else {
-    const num = Math.floor(
-      Math.random() * groupMap.value[currentGroup.value].length
-    );
-    const currentResult = groupMap.value[currentGroup.value][num];
-    drawResult.value = currentResult;
-    groupMap.value[currentGroup.value].splice(num, 1);
-    localStorage.setItem("drawFace", JSON.stringify(groupMap.value));
-    localStorage.setItem(
-      "lastResult",
-      JSON.stringify({
-        group: currentGroup.value,
-        num: currentResult,
-      })
-    );
-  }
-}
-
-function handleGroupChange() {
-  drawResult.value = "";
-}
-function resetGroup() {
-  groupMap.value[currentGroup.value] = getList();
-  drawResult.value = "";
-}
-onBeforeMount(() => {
-  const initGroup = JSON.parse(localStorage.getItem("drawFace"));
-  const lastResult = JSON.parse(localStorage.getItem("lastResult"));
-  if (initGroup !== null) {
-    groupMap.value = initGroup;
-  }
-  if (lastResult !== null) {
-    currentGroup.value = lastResult.group;
-    drawResult.value = lastResult.num;
-  }
+const openRule = ref(false);
+const handleOk = () => {
+  openRule.value = false;
+};
+const handleRuleOpen = () => {
+  console.log("click");
+  openRule.value = true;
+};
+onMounted(() => {
+  router.push({ name: currentGame.value });
 });
 </script>
 
 <template>
+  <div class="main">
+    <a-page-header
+      style="border: 1px solid rgb(235, 237, 240, 0.5)"
+      :title="translation[currentGame].title"
+      :sub-title="translation[currentGame].subTitle"
+      @back="switchGame"
+    >
+      <template #extra>
+        <a-button key="3" @click="handleRuleOpen">玩法參考</a-button>
+      </template>
+    </a-page-header>
+    <a-modal v-model:visible="openRule" title="Rules" @ok="handleOk">
+      <div v-if="currentGame === GAME.DRAW_FACE">
+        <ul>
+          <li>每組會拿到對應組別的迷因圖庫</li>
+          <li>派出一名上台，模仿抽到的圖片，答案為圖片的序號</li>
+          <li>此頁面只能給上台者看到</li>
+          <li>答對得分，最多 36 題</li>
+          <li>可以倒數兩分鐘，看大家能猜到多少</li>
+        </ul>
+      </div>
+      <div v-else>
+        <ul>
+          <li>主持人投影此頁面</li>
+          <li>指派一名上台</li>
+          <li>進行 90 秒的倒數計時，唸出文字真正的顏色</li>
+          <li>答對，主持人點擊左邊按鈕，答錯點擊右邊</li>
+        </ul>
+      </div>
+    </a-modal>
+  </div>
   <router-view></router-view>
 </template>
 
@@ -73,6 +89,11 @@ onBeforeMount(() => {
 * {
   margin: 0;
   padding: 0;
+}
+.sider {
+  position: absolute;
+  left: 5%;
+  top: 5%;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

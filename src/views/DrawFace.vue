@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onBeforeMount, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onBeforeMount, onMounted, computed, inject } from "vue";
+
 import { message } from "ant-design-vue";
 import Group from "../components/Group.vue";
+import { GAME } from "../constants";
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 
-const router = useRouter();
+const { syncCurrentGame } = inject("switchGame");
+
 const getList = () =>
   Array(36)
     .fill(0)
@@ -58,6 +60,7 @@ function resetGroup() {
 onBeforeMount(() => {
   const initGroup = JSON.parse(localStorage.getItem("drawFace"));
   const lastResult = JSON.parse(localStorage.getItem("lastResult"));
+
   if (initGroup !== null) {
     groupMap.value = initGroup;
   }
@@ -65,6 +68,9 @@ onBeforeMount(() => {
     currentGroup.value = lastResult.group;
     drawResult.value = lastResult.num;
   }
+});
+onMounted(() => {
+  syncCurrentGame(GAME.DRAW_FACE);
 });
 </script>
 
@@ -97,8 +103,8 @@ onBeforeMount(() => {
     >
       {{ isCurrentGroupEnd ? "End" : "Draw" }}
     </a-button>
-    <a-button class="button" @click="router.push('colors')">
-      To Draw Color Page
+    <a-button class="button" @click="resetGroup">
+      Back to Groups
     </a-button>
     <a-button
       v-if="isCurrentGroupEnd"
@@ -116,11 +122,10 @@ onBeforeMount(() => {
   max-width: 1330px;
   height: 100vh;
   margin: 0 auto;
-  margin-top: 60px;
   padding: 40px;
   box-sizing: border-box;
   .button {
-    margin: 10px auto;
+    margin: 10px;
     width: 150px;
   }
 }

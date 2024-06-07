@@ -1,8 +1,10 @@
 <template>
   <div class="wrapper">
-    <div class="score">SCORE: {{ score }}</div>
     <div class="colors">
-      <div class="time">{{ readableCountdown }}</div>
+      <div class="time">
+        {{ readableCountdown }}
+        <p class="score1">SCORE: {{ score }}</p>
+      </div>
       <div class="start-page" v-if="gameStatus === GAME_STATUS.READY">
         <div class="button" @click="gameStart">Start</div>
       </div>
@@ -45,9 +47,10 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import useInterval from "../utils/useInterval";
 import colorImgs from "../imageData/color-image";
+import { GAME } from "../constants";
 const {
   waterBlue,
   whilte,
@@ -85,6 +88,8 @@ const ANSWER = {
   CORRECT: "correct",
   WRONG: "wrong",
 };
+// const { syncCurrentGame } = inject("switchGame");
+
 const TOTAL_TIME = 90;
 
 const countdown = ref(TOTAL_TIME);
@@ -171,13 +176,10 @@ const countdownBg = computed(() => `url(${cdn.value}/new-start.png)`);
   background-image: v-bind("bg");
   @include centerBg(cover);
 }
-.score {
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: lemonchiffon;
-  font-size: 50px;
-  font-weight: bold;
+
+.score1 {
+  font-size: 20px;
+  margin-bottom: 0;
 }
 .time {
   font-size: 50px;
